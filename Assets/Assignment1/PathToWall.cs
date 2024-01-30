@@ -1,3 +1,5 @@
+using JetBrains.Annotations;
+using NaughtyAttributes;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -6,13 +8,15 @@ namespace Assignment1
     [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]
     public class PathToWall : MonoBehaviour
     {
+        [Foldout("Extras")]
         // -- path --
         [SerializeField] Vector3[] path = System.Array.Empty<Vector3>();
         
         // -- height --
         const float DefaultHeight = 4;
         [SerializeField] bool useCustomHeight;
-        [SerializeField] float customHeight = 4;
+        [SerializeField][ShowIf(nameof(useCustomHeight))] float customHeight = 4;
+
         float GetHeight() => useCustomHeight ? customHeight : DefaultHeight;
         
         MeshFilter meshFilter;
@@ -38,6 +42,7 @@ namespace Assignment1
         }
         
         [ContextMenu("Generate Path")]
+        [Button]
         void GenerateNewPath()
         {
             path = new Vector3[Random.Range(5, 15)];
@@ -52,17 +57,59 @@ namespace Assignment1
         }
 
         [ContextMenu("Generate Wall Mesh")]
+        [Button][EnableIf("CanGenerateWallMesh")]
         void GenerateWallMesh()
         {
-            // ASSIGNMENT HERE
+            if (path.Length < 2) return;
+            
+            var vertices = GetVertices();
+            var tris = GetTriangles(vertices);
+            
+            var mesh = new Mesh
+            {
+                vertices = vertices,
+                triangles = tris
+            };
+            mesh.RecalculateNormals();
 
-            // [uncomment when ready with vertices etc., so that it doesn't throw compilation errors]
-            // Mesh mesh = new Mesh();
-            // mesh.vertices = vertices;
-            // mesh.triangles = triangles;
-            // mesh.RecalculateNormals();
+            MeshFilter.mesh = mesh;
+        }
 
-            // MeshFilter.mesh = mesh;
+        private Vector3[] GetVertices()
+        {
+            if (path is {Length: <= 0}) return System.Array.Empty<Vector3>();
+
+            var height = GetHeight();
+            var vertices = new Vector3[path.Length * 2];
+            for (var i = 0; i < path.Length; i++)
+            {
+                vertices[2*i] = path[i];
+                vertices[2*i + 1] = path[i] + new Vector3(0, height, 0);
+                
+            }
+
+            return vertices;
+        }
+
+        private int[] GetTriangles(Vector3[] vertices)
+        {
+            if (vertices is {Length: <= 2}) return System.Array.Empty<int>();
+            
+            var tris = new int[vertices.Length * 3];
+            for (var i = 0; i < vertices.Length - 2; i++)
+            { // quick n dirty hack to get the triangles drawn clockwise
+                tris[i * 3] = i % 2 == 0 ? i : i + 1;
+                tris[i * 3 + 1] = i % 2 == 0 ? i + 1 : i;
+                tris[i * 3 + 2] = i + 2;
+            }
+
+            return tris;
+        }
+
+        [UsedImplicitly]
+        private bool CanGenerateWallMesh()
+        {
+            return path is {Length: > 0};
         }
 
 
