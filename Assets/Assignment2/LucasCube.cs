@@ -112,17 +112,17 @@ namespace Assignment2
         }
     }
 
-    [EditorTool("Cube manager Tool", typeof(LucasCube))]
-    public class CubeTool : EditorTool
+    [EditorTool("Cube positioner Tool", typeof(LucasCube))]
+    public class CubePositionerTool : EditorTool
     {
         public override void OnActivated()
         {
-            SceneView.lastActiveSceneView.ShowNotification(new GUIContent("Creating cube..."), .1f);
+            SceneView.lastActiveSceneView.ShowNotification(new GUIContent("Positioning cube..."), .1f);
         }
 
         public override void OnWillBeDeactivated()
         {
-            SceneView.lastActiveSceneView.ShowNotification(new GUIContent("Stopping cube magic..."), .1f);
+            SceneView.lastActiveSceneView.ShowNotification(new GUIContent("Stopping positioning magic..."), .1f);
         }
 
         public override void OnToolGUI(EditorWindow window)
@@ -139,6 +139,30 @@ namespace Assignment2
                     Undo.RecordObject(cube, "Set Cube Position");
                     cube.position = positionHandle;
                 }
+            }
+        }
+    }
+    
+
+    [EditorTool("Cube rotation and scaling Tool", typeof(LucasCube))]
+    public class CubeRotaScalerTool : EditorTool
+    {
+        public override void OnActivated()
+        {
+            SceneView.lastActiveSceneView.ShowNotification(new GUIContent("Rotating and Scaling cube..."), .1f);
+        }
+
+        public override void OnWillBeDeactivated()
+        {
+            SceneView.lastActiveSceneView.ShowNotification(new GUIContent("Stopping rotascale  magic..."), .1f);
+        }
+
+        public override void OnToolGUI(EditorWindow window)
+        {
+            foreach (var obj in targets)
+            {
+                if (obj is not LucasCube cube)
+                    continue;
 
                 EditorGUI.BeginChangeCheck();
                 var rotationHandle = Handles.RotationHandle(Quaternion.Euler(cube.rotation), cube.position);
