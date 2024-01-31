@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using NaughtyAttributes;
 using UnityEditor;
 using UnityEditor.EditorTools;
@@ -30,6 +31,7 @@ namespace Assignment2
         }
 
         [Button]
+        [UsedImplicitly]
         public void CreateCube()
         {
             int[] tris =
@@ -57,12 +59,6 @@ namespace Assignment2
 
             mesh.RecalculateNormals();
             MeshFilter.mesh = mesh;
-
-            Debug.Log($"Pressed Shit");
-            // lucasCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            // lucasCube.transform.position = position;
-            // lucasCube.transform.rotation = Quaternion.Euler(rotation);
-            // lucasCube.transform.localScale = scale;
         }
 
 #if UNITY_EDITOR
