@@ -337,9 +337,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e0ee2d08cbf45479883d62a427b0920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 1.854912, y: 0, z: 0}
-  rotation: {x: 86.81206, y: 144.55219, z: 154.19766}
-  scale: {x: 3.1580482, y: 3.1580482, z: 2.8505235}
+  position: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
 --- !u!4 &1512402017
 Transform:
   m_ObjectHideFlags: 0
