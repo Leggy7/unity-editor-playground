@@ -75,66 +75,13 @@ namespace Assignment3.Editor
                 target.ReleasePointer(evt.pointerId);
             }
         }
-
-        // This method checks whether a drag is in progress. If true, queries the root
-        // of the visual tree to find all slots, decides which slot is the closest one
-        // that overlaps target, and sets the position of target so that it rests on top
-        // of that slot. Sets the position of target back to its original position
-        // if there is no overlapping slot.
+        
         private void PointerCaptureOutHandler(PointerCaptureOutEvent evt)
         {
             if (enabled)
             {
-                // VisualElement slotsContainer = root.Q<VisualElement>("slots");
-                // UQueryBuilder<VisualElement> allSlots =
-                //     slotsContainer.Query<VisualElement>(className: "slot");
-                // UQueryBuilder<VisualElement> overlappingSlots =
-                //     allSlots.Where(OverlapsTarget);
-                // VisualElement closestOverlappingSlot =
-                //     FindClosestSlot(overlappingSlots);
-                // Vector3 closestPos = Vector3.zero;
-                // if (closestOverlappingSlot != null)
-                // {
-                //     closestPos = RootSpaceOfSlot(closestOverlappingSlot);
-                //     closestPos = new Vector2(closestPos.x - 5, closestPos.y - 5);
-                // }
-                // target.transform.position =
-                //     closestOverlappingSlot != null ?
-                //         closestPos :
-                //         targetStartPosition;
-
                 enabled = false;
             }
-        }
-
-        private bool OverlapsTarget(VisualElement slot)
-        {
-            return target.worldBound.Overlaps(slot.worldBound);
-        }
-
-        private VisualElement FindClosestSlot(UQueryBuilder<VisualElement> slots)
-        {
-            List<VisualElement> slotsList = slots.ToList();
-            float bestDistanceSq = float.MaxValue;
-            VisualElement closest = null;
-            foreach (VisualElement slot in slotsList)
-            {
-                Vector3 displacement =
-                    RootSpaceOfSlot(slot) - target.transform.position;
-                float distanceSq = displacement.sqrMagnitude;
-                if (distanceSq < bestDistanceSq)
-                {
-                    bestDistanceSq = distanceSq;
-                    closest = slot;
-                }
-            }
-            return closest;
-        }
-
-        private Vector3 RootSpaceOfSlot(VisualElement slot)
-        {
-            Vector2 slotWorldSpace = slot.parent.LocalToWorld(slot.layout.position);
-            return root.WorldToLocal(slotWorldSpace);
         }
     }
 }
