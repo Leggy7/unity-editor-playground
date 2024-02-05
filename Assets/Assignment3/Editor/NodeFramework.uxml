@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Assignment3/Editor/NodeFramework.uss?fileID=7433441132597879392&amp;guid=9bc225c03306dcd468b40813871f786e&amp;type=3#NodeFramework" />
+    <ui:VisualElement name="MainContainer" style="flex-grow: 1; flex-direction: column; max-width: none; max-height: none; width: auto; height: auto; flex-basis: auto; align-self: stretch; min-width: auto; min-height: auto; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; border-bottom-color: rgb(141, 152, 156); border-bottom-width: 5px;">
+        <uie:Toolbar name="BoardToolbar" style="height: 41px;">
+            <ui:EnumField type="Assignment3.Editor.NodeType, AssemblyAssignment3" name="NodeTypesList" style="align-items: stretch;" />
+            <ui:Button text="Create" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateNodeButton" />
+        </uie:Toolbar>
+        <ui:VisualElement name="Board" style="flex-grow: 1; width: auto; align-self: stretch; flex-direction: column; min-width: 250px; align-items: flex-start; height: auto; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; min-height: 250px; justify-content: flex-start;" />
+    </ui:VisualElement>
+</ui:UXML>
