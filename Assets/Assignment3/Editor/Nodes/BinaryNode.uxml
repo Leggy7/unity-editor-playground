@@ -1,7 +1,13 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Assignment3.Editor.Nodes.BinaryNode output-ports="2">
-        <ui:VisualElement name="Frame" style="flex-grow: 1; border-left-color: rgb(108, 168, 178); border-right-color: rgb(108, 168, 178); border-top-color: rgb(108, 168, 178); border-bottom-color: rgb(108, 168, 178); background-color: rgb(194, 246, 255); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;">
-            <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Title" style="position: absolute; top: 0;" />
+    <ui:Template name="OutputPin" src="project://database/Assets/Assignment3/Editor/Nodes/OutputPin.uxml?fileID=9197481963319205126&amp;guid=606586d0aae0aa54bb774e5351a28c5e&amp;type=3#OutputPin" />
+    <Style src="project://database/Assets/Assignment3/Editor/Nodes/node_styles.uss?fileID=7433441132597879392&amp;guid=e6acb62183fa65343b7dc23961c0c30d&amp;type=3#node_styles" />
+    <Assignment3.Editor.Nodes.BinaryNode output-ports="2" style="color: rgb(27, 27, 27); justify-content: space-around; position: absolute;">
+        <ui:VisualElement name="Frame" class="completeUnselected">
+            <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Title" style="position: absolute; top: 0; color: rgb(27, 27, 27);" />
+            <ui:VisualElement name="PinHouse" style="flex-grow: 1; position: absolute; right: -15px; width: auto; height: auto; top: 10px; background-color: rgba(0, 0, 0, 0); border-top-left-radius: 0; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 0; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 0; min-width: 10px; min-height: 10px; border-left-color: rgb(108, 168, 178); border-right-color: rgb(108, 168, 178); border-top-color: rgb(108, 168, 178); border-bottom-color: rgb(108, 168, 178); padding-right: 1px; padding-top: 1px; padding-bottom: 1px;">
+                <ui:Instance template="OutputPin" name="OutputPin" />
+                <ui:Instance template="OutputPin" name="OutputPin" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </Assignment3.Editor.Nodes.BinaryNode>
 </ui:UXML>
