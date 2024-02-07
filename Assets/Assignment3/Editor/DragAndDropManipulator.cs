@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using Assignment3.Editor.Nodes;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -44,6 +45,12 @@ namespace Assignment3.Editor
         // makes target capture the pointer, and denotes that a drag is now in progress.
         private void PointerDownHandler(PointerDownEvent evt)
         {
+            var elementClicked = evt.target as VisualElement;
+            if (elementClicked!.GetFirstAncestorOfType<OutputPin>() is not null)
+            {
+                return;
+            }
+            
             targetStartPosition = target.transform.position;
             pointerStartPosition = evt.position;
             target.CapturePointer(evt.pointerId);
