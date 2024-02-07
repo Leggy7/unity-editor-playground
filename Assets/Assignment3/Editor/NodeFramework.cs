@@ -27,8 +27,9 @@ namespace Assignment3.Editor
         private readonly List<VisualElement> _nodes = new();
         private readonly List<(OutputPin fromPin, Node toNode)> _connections = new();
 
-        private readonly Vector2 _pinOriginDisplacement = new Vector2(0, -20f);
+        private readonly Vector2 _pinOriginDisplacement = new(0, -20f);
 
+        public List<(OutputPin fromPin, Node toNode)> Connections => _connections;
         
         [MenuItem("Febucci/NodeFramework")]
         public static void ShowExample()
@@ -58,12 +59,6 @@ namespace Assignment3.Editor
             mainContainer.RegisterCallback<MouseUpEvent>(OnMouseUpEventHandler);
         }
 
-        private void OnKeyUpEventHandler(KeyUpEvent evt)
-        {
-            Debug.Log($"hey!");
-            Debug.LogWarning($"I pressed {evt.character}");
-        }
-
         private void OnGUI()
         {
             Handles.BeginGUI();
@@ -82,7 +77,7 @@ namespace Assignment3.Editor
 
         private void HandleKeyboardEvents()
         {
-            if (Event.current != null && Event.current.isKey)
+            if (Event.current != null && Event.current.isKey && Event.current.keyCode == KeyCode.Delete)
             {
                 Event.current.Use();
                 if (_selectedNode is not null)
@@ -131,8 +126,7 @@ namespace Assignment3.Editor
                 _board.Add(instance);
                 instance.transform.position = _board.transform.position;
                 instance.RegisterCallback<MouseDownEvent>(OnMouseDownOnNodeEventHandler);
-                instance.RegisterCallback<KeyUpEvent>(OnKeyUpEventHandler);
-                var dragAndDropManipulator = new DragAndDropManipulator(instance);
+                var dragAndDropManipulator = new DragAndDropManipulator(instance, this);
                 instance.Query<OutputPin>().ToList().ForEach(op =>
                 {
                     op.RegisterCallback<MouseDownEvent>(OnMouseDownOnPinEventHandler);
