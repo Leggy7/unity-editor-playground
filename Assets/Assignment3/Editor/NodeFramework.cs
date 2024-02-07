@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Assignment3.Editor.Nodes;
 using UnityEditor;
 using UnityEngine;
@@ -14,14 +16,24 @@ namespace Assignment3.Editor
         [SerializeField]
         private VisualTreeAsset binaryNodeUxml;
 
-        private VisualElement board;
-        private EnumField nodeTypeSelector;
-        private Button createNodeButton;
+        private VisualElement _board;
+        private EnumField _nodeTypeSelector;
+        private Button _createNodeButton;
 
+        private OutputPin _startingPin;
+        private Vector2 _startingPosition;
+
+        private Node _selectedNode;
+        private readonly List<VisualElement> _nodes = new();
+        private readonly List<(OutputPin fromPin, Node toNode)> _connections = new();
+
+        private readonly Vector2 _pinOriginDisplacement = new Vector2(0, -20f);
+
+        
         [MenuItem("Febucci/NodeFramework")]
         public static void ShowExample()
         {
-            NodeFramework wnd = GetWindow<NodeFramework>();
+            var wnd = GetWindow<NodeFramework>();
             wnd.titleContent = new GUIContent("NodeFramework");
         }
 
@@ -36,34 +48,166 @@ namespace Assignment3.Editor
             
             // this is a life saver!
             mainContainer.StretchToParentSize();
-            board = mainContainer.Q<VisualElement>("Board");
+            _board = mainContainer.Q<VisualElement>("Board");
             
             var toolbar = mainContainer.Q<VisualElement>("BoardToolbar");
-            nodeTypeSelector = toolbar.Q<EnumField>();
-            createNodeButton = toolbar.Q<Button>();
-            createNodeButton.clicked += OnCreateNodeButtonClicked;
+            _nodeTypeSelector = toolbar.Q<EnumField>();
+            _createNodeButton = toolbar.Q<Button>();
+            _createNodeButton.clicked += OnCreateNodeButtonClicked;
+            wantsMouseMove = true;
+            mainContainer.RegisterCallback<MouseUpEvent>(OnMouseUpEventHandler);
+        }
+
+        private void OnKeyUpEventHandler(KeyUpEvent evt)
+        {
+            Debug.Log($"hey!");
+            Debug.LogWarning($"I pressed {evt.character}");
+        }
+
+        private void OnGUI()
+        {
+            Handles.BeginGUI();
+            if(_startingPin is not null)
+            {
+                var toPosition = Event.current.mousePosition;
+                Handles.color = Color.red;
+                Handles.DrawLine(_startingPosition, toPosition);
+            }
+            RenderNodeConnections();
+            Repaint();
+            Handles.EndGUI();
+            
+            HandleKeyboardEvents();
+        }
+
+        private void HandleKeyboardEvents()
+        {
+            if (Event.current != null && Event.current.isKey)
+            {
+                Event.current.Use();
+                if (_selectedNode is not null)
+                {
+                    DeleteNode(_selectedNode);
+                }
+            }
+        }
+
+        private void DeleteNode(Node n)
+        {
+            var connectionEntriesFrom = _connections.Where(ce => ce.fromPin.GetFirstAncestorOfType<Node>() == n);
+            var connectionEntriesTo = _connections.Where(ce => ce.toNode == n);
+            connectionEntriesFrom.ToList().ForEach(ce => _connections.Remove(ce));
+            connectionEntriesTo.ToList().ForEach(ce => _connections.Remove(ce));
+            if (_nodes.Contains(n)) _nodes.Remove(n);
+            _board.Remove(n.parent);
+            _selectedNode = null;
+        }
+
+        private void RenderNodeConnections()
+        {
+            foreach (var connection in _connections)
+            {
+                Handles.color = Color.white;
+                var fromPosition = connection.fromPin.worldBound.center + _pinOriginDisplacement;
+                var toPosition = connection.toNode.worldBound.center;
+                Handles.DrawLine(fromPosition, toPosition);
+            }
         }
 
         private void OnCreateNodeButtonClicked()
         {
             TemplateContainer instance = null;
-            if (nodeTypeSelector.text == NodeType.Single.ToString())
+            if (_nodeTypeSelector.text == NodeType.Single.ToString())
             {
                 instance = singleNodeUxml.Instantiate();
             }
-            if (nodeTypeSelector.text == NodeType.Binary.ToString())
+            if (_nodeTypeSelector.text == NodeType.Binary.ToString())
             {
                 instance = binaryNodeUxml.Instantiate();
             }
 
             if (instance is not null)
             {
-                board.Add(instance);
-                instance.transform.position = board.transform.position;
+                _board.Add(instance);
+                instance.transform.position = _board.transform.position;
+                instance.RegisterCallback<MouseDownEvent>(OnMouseDownOnNodeEventHandler);
+                instance.RegisterCallback<KeyUpEvent>(OnKeyUpEventHandler);
                 var dragAndDropManipulator = new DragAndDropManipulator(instance);
-                var node = instance.Q<Node>();
-                Debug.Log($"{node.name} has {node.outputPorts} output ports.");
+                instance.Query<OutputPin>().ToList().ForEach(op =>
+                {
+                    op.RegisterCallback<MouseDownEvent>(OnMouseDownOnPinEventHandler);
+                    op.RegisterCallback<MouseOverEvent>(OnMouseOverOnPinEventHandler);
+                    op.RegisterCallback<MouseOutEvent>(OnMouseOutOnPinEventHandler);
+                });
+                
+                _nodes.Add(instance);
             }
+        }
+
+        private void OnMouseDownOnNodeEventHandler(MouseDownEvent evt)
+        {
+            var ve = evt.target as VisualElement;
+            var node = ve!.GetFirstAncestorOfType<Node>();
+            var outputPin = ve!.GetFirstAncestorOfType<OutputPin>();
+
+            if (node is null || outputPin is not null)
+            {
+                return;
+            }
+
+            if (_selectedNode is not null)
+            {
+                _selectedNode.Q<VisualElement>("Frame").RemoveFromClassList("completeSelected");
+                _selectedNode.Q<VisualElement>("Frame").AddToClassList("completeUnselected");
+            }
+            
+            _selectedNode = node;
+            _selectedNode.Q<VisualElement>("Frame").RemoveFromClassList("completeUnselected");
+            _selectedNode.Q<VisualElement>("Frame").AddToClassList("completeSelected");
+        }
+
+        private void OnMouseOutOnPinEventHandler(MouseOutEvent evt)
+        {
+            // TODO remove highlighting for the border of the output pin
+        }
+
+        private void OnMouseOverOnPinEventHandler(MouseOverEvent evt)
+        { 
+            // TODO fill in with some highlighting for the border of the output pin
+        }
+
+        /// <summary>
+        /// Called generally on <see cref="NodeFramework"/> editor window.
+        /// This is the way in which I detect mouse up event.
+        /// </summary>
+        private void OnMouseUpEventHandler(MouseUpEvent evt)
+        {
+            var target = (VisualElement) evt.target;
+            if(target.worldBound.Contains(evt.mousePosition))
+            {
+                var rootNode = target.GetFirstAncestorOfType<Node>();
+                if(rootNode is not null && _startingPin.FindCommonAncestor(rootNode) != rootNode)
+                {
+                    var toAdd = (startingPin: _startingPin, rootNode);
+                    if (!_connections.Contains(toAdd))
+                    {
+                        _connections.Add((_startingPin, rootNode));
+                    }
+                }
+            }
+
+            _startingPin = null;
+        }
+        
+        private void OnMouseDownOnPinEventHandler(MouseDownEvent evt)
+        {
+            var elementClicked = evt.target as VisualElement;
+            _startingPin = elementClicked!.GetFirstAncestorOfType<OutputPin>();
+            if (_startingPin is null) return;
+            
+            Debug.Log($"I clicked on {_startingPin.name} [{_startingPin.transform.position}]");
+            _startingPosition = _startingPin.worldBound.center;
+            _startingPosition += _pinOriginDisplacement;
         }
     }
 
