@@ -189,6 +189,9 @@ namespace Assignment3.Editor
             node.Q<VisualElement>("Frame").AddToClassList("startNode");
         }
 
+        /// <summary>
+        /// If not landing on an <see cref="OutputPin"/> this function sets the target node as selected one.
+        /// </summary>
         private void OnMouseDownOnNodeEventHandler(MouseDownEvent evt)
         {
             var ve = evt.target as VisualElement;
@@ -250,13 +253,18 @@ namespace Assignment3.Editor
             _startingPin = null;
         }
         
+        /// <summary>
+        /// Handles the tracing route for node connection.
+        /// While held down it is than managed on the <see cref="OnGUI"/> function.
+        /// The final event catching the release in order to actually connect nodes is demanded to the <see cref="OnMouseUpEventHandler"/> which is global to the main container
+        /// </summary>
+        /// <param name="evt"></param>
         private void OnMouseDownOnPinEventHandler(MouseDownEvent evt)
         {
             var elementClicked = evt.target as VisualElement;
             _startingPin = elementClicked!.GetFirstAncestorOfType<OutputPin>();
             if (_startingPin is null) return;
             
-            Debug.Log($"I clicked on {_startingPin.name} [{_startingPin.transform.position}]");
             _startingPosition = _startingPin.worldBound.center;
             _startingPosition += _pinOriginDisplacement;
         }
