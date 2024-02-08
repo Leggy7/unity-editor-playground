@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 
 namespace Assignment3.Editor
 {
-    public class NodeFramework : EditorWindow
+    public partial class NodeFramework : EditorWindow
     {
         [SerializeField]
         private VisualTreeAsset m_VisualTreeAsset = default;
@@ -21,6 +21,7 @@ namespace Assignment3.Editor
         private VisualElement _board;
         private EnumField _nodeTypeSelector;
         private Button _createNodeButton;
+        private Button _exportBoardButton;
 
         private OutputPin _startingPin;
         private Vector2 _startingPosition;
@@ -56,8 +57,10 @@ namespace Assignment3.Editor
             
             var toolbar = mainContainer.Q<VisualElement>("BoardToolbar");
             _nodeTypeSelector = toolbar.Q<EnumField>();
-            _createNodeButton = toolbar.Q<Button>();
+            _createNodeButton = toolbar.Q<Button>("CreateNodeButton");
+            _exportBoardButton = toolbar.Q<Button>("Export");
             _createNodeButton.clicked += OnCreateNodeButtonClicked;
+            _exportBoardButton.clicked += OnExportButtonClicked;
             wantsMouseMove = true;
             mainContainer.RegisterCallback<MouseUpEvent>(OnMouseUpEventHandler);
         }
