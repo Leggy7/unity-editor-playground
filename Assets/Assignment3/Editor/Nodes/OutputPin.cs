@@ -6,6 +6,7 @@ namespace Assignment3.Editor.Nodes
 {
     public class OutputPin : VisualElement
     {
+        public Guid id { get; private set; }
         private bool _used;
         private VisualElement _usedFlag;
         
@@ -14,6 +15,7 @@ namespace Assignment3.Editor.Nodes
             style.width = new StyleLength(new Length(10f));
             style.height = new StyleLength(new Length(10f));
             RegisterCallback<AttachToPanelEvent>(Init);
+            id = Guid.NewGuid();
         }
 
         public new class UxmlFactory : UxmlFactory<OutputPin, UxmlTraits> {}

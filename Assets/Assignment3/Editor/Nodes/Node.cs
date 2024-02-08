@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using UnityEngine.UIElements;
 
@@ -11,12 +12,15 @@ namespace Assignment3.Editor.Nodes
         /// Use <see cref="NodeFramework.SetNodeAsStart"/> instead.
         /// </summary>
         public bool IsStart { get; set; }
+
+        public Guid id { get; private set; }
         
         protected Node()
         {
             style.width = new StyleLength(new Length(200f));
             style.height = new StyleLength(new Length(100f));
             RegisterCallback<AttachToPanelEvent>(Init);
+            id = Guid.NewGuid();
         }
         
         // Add the two custom UXML attributes.
