@@ -207,12 +207,16 @@ namespace Assignment3.Editor
 
         private void OnMouseOutOnPinEventHandler(MouseOutEvent evt)
         {
-            // TODO remove highlighting for the border of the output pin
+            var ve = evt.target as VisualElement;
+            if (ve!.name != "RoundShape") return;
+            ve.RemoveFromClassList("hovered");
         }
 
         private void OnMouseOverOnPinEventHandler(MouseOverEvent evt)
         { 
-            // TODO fill in with some highlighting for the border of the output pin
+            var ve = evt.target as VisualElement;
+            if (ve!.name != "RoundShape") return;
+            ve.AddToClassList("hovered");
         }
 
         /// <summary>
