@@ -118,21 +118,34 @@ namespace Assignment3.Editor
         {
             if (nodesToDrag == null)
             {
-                var connectedFromMe = _frameworkReference.Connections
-                    .Where(c => c.fromPin.GetFirstAncestorOfType<Node>() == node)
-                    .Select(c => (c.toNode, c.toNode.transform.position)).ToList();
-                
-                var connectedWithMe = _frameworkReference.Connections
-                    .Where(c => c.toNode == node)
-                    .Select(c => (c.fromPin.GetFirstAncestorOfType<Node>(), c.fromPin.GetFirstAncestorOfType<Node>().transform.position))
-                    .ToList();
-
                 nodesToDrag = new List<(Node node, Vector3 startPosition)>();
-                nodesToDrag.AddRange(connectedWithMe);
-                nodesToDrag.AddRange(connectedFromMe);
+                GetConnectedNodesRecursive(node);
             }
 
             return nodesToDrag;
         }
+        
+        #region ugly recursive patch that I applied in a rush
+        /// <summary>
+        /// Please, don't look at me
+        /// </summary>
+        private void GetConnectedNodesRecursive(Node node)
+        {
+            var connectedFromMe = _frameworkReference.Connections
+                .Where(c => c.fromPin.GetFirstAncestorOfType<Node>() == node && nodesToDrag.All(n => n.Item1 != c.toNode))
+                .Select(c => (c.toNode, c.toNode.transform.position)).ToList();
+                
+            var connectedWithMe = _frameworkReference.Connections
+                .Where(c => c.toNode == node && nodesToDrag.All(n => n.node != c.fromPin.GetFirstAncestorOfType<Node>()))
+                .Select(c => (c.fromPin.GetFirstAncestorOfType<Node>(), c.fromPin.GetFirstAncestorOfType<Node>().transform.position))
+                .ToList();
+
+            nodesToDrag.AddRange(connectedWithMe);
+            nodesToDrag.AddRange(connectedFromMe);
+            
+            connectedFromMe.ForEach(ce => GetConnectedNodesRecursive(ce.toNode));
+            connectedWithMe.ForEach(ce => GetConnectedNodesRecursive(ce.Item1));
+        }
+        #endregion
     }
 }
