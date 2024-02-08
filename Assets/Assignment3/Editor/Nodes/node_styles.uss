@@ -33,3 +33,7 @@
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
 }
+
+.startNode {
+    background-color: rgb(251, 255, 172);
+}
