@@ -117,11 +117,17 @@ namespace Assignment3.Editor
 
         private void DeleteNode(Node n)
         {
-            var connectionEntriesFrom = _connections.Where(ce => ce.fromPin.GetFirstAncestorOfType<Node>() == n);
-            var connectionEntriesTo = _connections.Where(ce => ce.toNode == n);
-            connectionEntriesFrom.ToList().ForEach(ce => _connections.Remove(ce));
-            connectionEntriesTo.ToList().ForEach(ce => _connections.Remove(ce));
+            var connectionEntriesFrom = _connections.Where(ce => ce.fromPin.GetFirstAncestorOfType<Node>() == n).ToList();
+            var connectionEntriesTo = _connections.Where(ce => ce.toNode == n).ToList();
+            connectionEntriesFrom.ForEach(ce => _connections.Remove(ce));
+            connectionEntriesTo.ForEach(ce => _connections.Remove(ce));
             if (_nodes.Contains(n)) _nodes.Remove(n);
+
+            connectionEntriesTo.ForEach(ce =>
+            {
+                ce.fromPin.Q<VisualElement>("UsedFlag").visible = false;
+            });
+            
             _board.Remove(n.parent);
             _selectedNode = null;
         }
@@ -235,6 +241,8 @@ namespace Assignment3.Editor
                     if (!_connections.Contains(toAdd))
                     {
                         _connections.Add((_startingPin, rootNode));
+                        var pinFlag = _startingPin.Q<VisualElement>("UsedFlag");
+                        pinFlag.visible = true;
                     }
                 }
             }
