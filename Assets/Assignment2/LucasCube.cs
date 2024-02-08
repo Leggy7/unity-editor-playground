@@ -115,6 +115,26 @@ namespace Assignment2
     [EditorTool("Cube positioner Tool", typeof(LucasCube))]
     public class CubePositionerTool : EditorTool
     {
+        private GUIContent _icon;
+
+        private void OnEnable()
+        {
+            var icon = Resources.Load("moving_cube_icon") as Texture;
+            _icon = new GUIContent()
+            {
+                text = "Cube positioner Tool",
+                image = icon,
+                tooltip = "Move your cube around"
+            };
+        }
+
+        public override GUIContent toolbarIcon => _icon;
+
+        private void OnDisable()
+        {
+            _icon = null;
+        }
+
         public override void OnActivated()
         {
             SceneView.lastActiveSceneView.ShowNotification(new GUIContent("Positioning cube..."), .1f);
@@ -147,6 +167,26 @@ namespace Assignment2
     [EditorTool("Cube rotation and scaling Tool", typeof(LucasCube))]
     public class CubeRotaScalerTool : EditorTool
     {
+        private GUIContent _icon;
+
+        private void OnEnable()
+        {
+            var icon = Resources.Load("rotate_and_scale_cube") as Texture;
+            _icon = new GUIContent()
+            {
+                text = "Cube rotation and scaling Tool",
+                image = icon,
+                tooltip = "Rotate and scale your cube as you please"
+            };
+        }
+
+        private void OnDisable()
+        {
+            _icon = null;
+        }
+
+        public override GUIContent toolbarIcon => _icon;
+        
         public override void OnActivated()
         {
             SceneView.lastActiveSceneView.ShowNotification(new GUIContent("Rotating and Scaling cube..."), .1f);
