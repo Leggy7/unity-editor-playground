@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Assignment3.Editor.Nodes;
 using UnityEditor;
 using UnityEngine;
@@ -28,6 +30,7 @@ namespace Assignment3.Editor
         private readonly List<(OutputPin fromPin, Node toNode)> _connections = new();
 
         private readonly Vector2 _pinOriginDisplacement = new(0, -20f);
+        private bool _creationBusy;
 
         public List<(OutputPin fromPin, Node toNode)> Connections => _connections;
         
@@ -85,6 +88,24 @@ namespace Assignment3.Editor
                     DeleteNode(_selectedNode);
                 }
             }
+            else if (Event.current != null && Event.current.isKey && Event.current.keyCode == KeyCode.N && Event.current.control)
+            {
+                Event.current.Use();
+                CreateWithDelay().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// This was necessary because <see cref="OnGUI"/> is called more than once per frame.
+        /// I'm then processing the event and wait for the next frame.
+        /// </summary>
+        private async Task CreateWithDelay()
+        {
+            if (_creationBusy) return;
+            _creationBusy = true;
+            OnCreateNodeButtonClicked();
+            await Task.Delay(TimeSpan.FromSeconds(Time.deltaTime));
+            _creationBusy = false;
         }
 
         private void DeleteNode(Node n)
