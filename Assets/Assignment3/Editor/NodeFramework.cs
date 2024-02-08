@@ -100,7 +100,8 @@ namespace Assignment3.Editor
                 Event.current.Use();
                 CreateWithDelay().ConfigureAwait(false);
             }
-            else if (Event.current != null && Event.current.isKey && Event.current.keyCode == KeyCode.S && Event.current.control)
+            else if (_selectedNode != null && Event.current != null && Event.current.isKey && Event.current.keyCode == KeyCode.S && Event
+                .current.control)
             {
                 Event.current.Use();
                 SetNodeAsStart(_selectedNode);
@@ -126,7 +127,7 @@ namespace Assignment3.Editor
             var connectionEntriesTo = _connections.Where(ce => ce.toNode == n).ToList();
             connectionEntriesFrom.ForEach(ce => _connections.Remove(ce));
             connectionEntriesTo.ForEach(ce => _connections.Remove(ce));
-            if (_nodes.Contains(n)) _nodes.Remove(n);
+            if (_nodes.Contains(n.parent)) _nodes.Remove(n.parent);
 
             connectionEntriesTo.ForEach(ce =>
             {
