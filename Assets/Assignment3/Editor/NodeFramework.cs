@@ -61,6 +61,7 @@ namespace Assignment3.Editor
             _exportBoardButton = toolbar.Q<Button>("Export");
             _createNodeButton.clicked += OnCreateNodeButtonClicked;
             _exportBoardButton.clicked += OnExportButtonClicked;
+            _board.RegisterCallback<MouseUpEvent>(OnMouseUpOnBoardEventHandler);
             wantsMouseMove = true;
             mainContainer.RegisterCallback<MouseUpEvent>(OnMouseUpEventHandler);
         }
