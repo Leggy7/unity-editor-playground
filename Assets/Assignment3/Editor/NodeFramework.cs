@@ -82,6 +82,9 @@ namespace Assignment3.Editor
             HandleKeyboardEvents();
         }
 
+        /// <summary>
+        /// This processes all the keyboard input that will be otherwise captured by other editor windows
+        /// </summary>
         private void HandleKeyboardEvents()
         {
             if (Event.current != null && Event.current.isKey && Event.current.keyCode == KeyCode.Delete)
