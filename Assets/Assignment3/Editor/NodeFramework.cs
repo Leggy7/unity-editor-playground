@@ -79,9 +79,9 @@ namespace Assignment3.Editor
         {
             if (Event.current != null && Event.current.isKey && Event.current.keyCode == KeyCode.Delete)
             {
-                Event.current.Use();
-                if (_selectedNode is not null)
+                if (_selectedNode is not null && !_selectedNode.IsStart)
                 {
+                    Event.current.Use();
                     DeleteNode(_selectedNode);
                 }
             }
@@ -134,8 +134,25 @@ namespace Assignment3.Editor
                     op.RegisterCallback<MouseOutEvent>(OnMouseOutOnPinEventHandler);
                 });
                 
+                if(_nodes.Count <= 0) SetNodeAsStart(instance.Q<Node>());
                 _nodes.Add(instance);
             }
+        }
+
+        /// <summary>
+        /// This is responsible of setting <paramref name="node"/> as start node.
+        /// </summary>
+        /// <param name="node">The node to be set as start</param>
+        private void SetNodeAsStart(Node node)
+        {
+            _nodes.ForEach(n =>
+            {
+                var nodeVal =n.GetFirstAncestorOfType<Node>();
+                nodeVal.IsStart = false;
+                n.RemoveFromClassList("startNode");
+            });
+            node.IsStart = true;
+            node.Q<VisualElement>("Frame").AddToClassList("startNode");
         }
 
         private void OnMouseDownOnNodeEventHandler(MouseDownEvent evt)

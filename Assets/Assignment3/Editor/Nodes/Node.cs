@@ -6,6 +6,12 @@ namespace Assignment3.Editor.Nodes
 {
     public abstract class Node : VisualElement
     {
+        /// <summary>
+        /// Don't use this directly.
+        /// Use <see cref="NodeFramework.SetNodeAsStart"/> instead.
+        /// </summary>
+        public bool IsStart { get; set; }
+        
         protected Node()
         {
             style.width = new StyleLength(new Length(200f));
