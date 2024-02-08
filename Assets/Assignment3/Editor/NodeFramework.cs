@@ -100,6 +100,11 @@ namespace Assignment3.Editor
                 Event.current.Use();
                 CreateWithDelay().ConfigureAwait(false);
             }
+            else if (Event.current != null && Event.current.isKey && Event.current.keyCode == KeyCode.S && Event.current.control)
+            {
+                Event.current.Use();
+                SetNodeAsStart(_selectedNode);
+            }
         }
 
         /// <summary>
@@ -179,11 +184,12 @@ namespace Assignment3.Editor
         /// <param name="node">The node to be set as start</param>
         private void SetNodeAsStart(Node node)
         {
+            // first reset current starting node to default visuals
             _nodes.ForEach(n =>
             {
-                var nodeVal =n.GetFirstAncestorOfType<Node>();
+                var nodeVal =n.Q<Node>();
                 nodeVal.IsStart = false;
-                n.RemoveFromClassList("startNode");
+                n.Q<VisualElement>("Frame").RemoveFromClassList("startNode");
             });
             node.IsStart = true;
             node.Q<VisualElement>("Frame").AddToClassList("startNode");
