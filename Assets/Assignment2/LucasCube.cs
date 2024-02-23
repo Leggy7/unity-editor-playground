@@ -1,6 +1,5 @@
 ﻿using System;
 using JetBrains.Annotations;
-using NaughtyAttributes;
 using UnityEditor;
 using UnityEditor.EditorTools;
 using UnityEngine;
@@ -30,7 +29,7 @@ namespace Assignment2
             }
         }
 
-        [Button]
+        // [Button]
         [UsedImplicitly]
         public void CreateCube()
         {

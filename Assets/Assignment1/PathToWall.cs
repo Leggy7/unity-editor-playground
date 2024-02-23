@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
-using NaughtyAttributes;
 using UnityEngine;
+using Utilities;
 using Random = UnityEngine.Random;
 
 namespace Assignment1
@@ -8,14 +8,13 @@ namespace Assignment1
     [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]
     public class PathToWall : MonoBehaviour
     {
-        [Foldout("Extras")]
         // -- path --
         [SerializeField] Vector3[] path = System.Array.Empty<Vector3>();
         
         // -- height --
         const float DefaultHeight = 4;
         [SerializeField] bool useCustomHeight;
-        [SerializeField][ShowIf(nameof(useCustomHeight))] float customHeight = 4;
+        [SerializeField][Conditional(nameof(useCustomHeight), true)] float customHeight = 4;
 
         float GetHeight() => useCustomHeight ? customHeight : DefaultHeight;
         
@@ -41,9 +40,7 @@ namespace Assignment1
             GenerateWallMesh();
         }
         
-        [ContextMenu("Generate Path")]
-        [Button]
-        void GenerateNewPath()
+        public void GenerateNewPath()
         {
             path = new Vector3[Random.Range(5, 15)];
             Vector3 startPos = Random.insideUnitSphere * 2;
@@ -56,9 +53,7 @@ namespace Assignment1
             }
         }
 
-        [ContextMenu("Generate Wall Mesh")]
-        [Button][EnableIf("CanGenerateWallMesh")]
-        void GenerateWallMesh()
+        public void GenerateWallMesh()
         {
             if (path.Length < 2) return;
             
