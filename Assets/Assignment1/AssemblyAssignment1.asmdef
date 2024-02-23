@@ -2,7 +2,6 @@
     "name": "AssemblyAssignment1",
     "rootNamespace": "",
     "references": [
-        "GUID:776d03a35f1b52c4a9aed9f56d7b4229",
         "GUID:36ffbeec2ab3beb47bd48310024b14f6"
     ],
     "includePlatforms": [],
