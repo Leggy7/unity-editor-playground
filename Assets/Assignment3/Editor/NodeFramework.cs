@@ -35,7 +35,7 @@ namespace Assignment3.Editor
 
         public List<(OutputPin fromPin, Node toNode)> Connections => _connections;
         
-        [MenuItem("Febucci/NodeFramework")]
+        [MenuItem("Leggy/NodeFramework")]
         public static void ShowExample()
         {
             var wnd = GetWindow<NodeFramework>();
